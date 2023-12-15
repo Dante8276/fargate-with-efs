@@ -8,12 +8,11 @@ class GlobalArgs:
     Helper to define global statics
     """
 
-    OWNER = "MystiqueAutomation"
-    ENVIRONMENT = "production"
-    REPO_NAME = "fargate-with-efs"
-    SOURCE_INFO = f"https://github.com/miztiik/{REPO_NAME}"
-    VERSION = "2020_09_07"
-    MIZTIIK_SUPPORT_EMAIL = ["mystique@example.com", ]
+    OWNER = "ABB"
+    ENVIRONMENT = "development"
+    # REPO_NAME = "fargate-with-efs"
+    # SOURCE_INFO = f"https://github.com/yash/{REPO_NAME}"
+    VERSION = "2023_15_12"
 
 
 class EfsStack(core.Stack):
@@ -33,7 +32,7 @@ class EfsStack(core.Stack):
             self,
             id="efsSecurityGroup",
             vpc=vpc,
-            security_group_name=f"efs_sg_{id}",
+            security_group_name=f"matlab_gcca_efs_sg_{id}",
             description="Security Group to connect to EFS from the VPC"
         )
 
@@ -61,7 +60,7 @@ class EfsStack(core.Stack):
         efs_acl = _efs.Acl(
             owner_gid="1000",
             owner_uid="1000",
-            permissions="0755"
+            permissions="777"
         )
 
         # create efs posix user
@@ -83,7 +82,7 @@ class EfsStack(core.Stack):
         self.efs_ap_nginx = _efs.AccessPoint(
             self,
             "efsNginxAccessPoint",
-            path="/nginx/html",
+            path="/matlab/gccaFiles",
             file_system=self.efs_share,
             posix_user=efs_user,
             create_acl=efs_acl
@@ -93,12 +92,12 @@ class EfsStack(core.Stack):
         ###########################################
         ################# OUTPUTS #################
         ###########################################
-        output_0 = core.CfnOutput(
-            self,
-            "AutomationFrom",
-            value=f"{GlobalArgs.SOURCE_INFO}",
-            description="To know more about this automation stack, check out our github page."
-        )
+        # output_0 = core.CfnOutput(
+        #     self,
+        #     "AutomationFrom",
+        #     value=f"{GlobalArgs.SOURCE_INFO}",
+        #     description="To know more about this automation stack, check out our github page."
+        # )
 
         output_1 = core.CfnOutput(
             self,

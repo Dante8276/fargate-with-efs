@@ -7,12 +7,11 @@ class GlobalArgs:
     Helper to define global statics
     """
 
-    OWNER = "MystiqueAutomation"
-    ENVIRONMENT = "production"
-    REPO_NAME = "fargate-with-efs"
-    SOURCE_INFO = f"https://github.com/miztiik/{REPO_NAME}"
-    VERSION = "2020_09_07"
-    MIZTIIK_SUPPORT_EMAIL = ["mystique@example.com", ]
+    OWNER = "ABB"
+    ENVIRONMENT = "development"
+    # REPO_NAME = "fargate-with-efs"
+    # SOURCE_INFO = f"https://github.com/yash/{REPO_NAME}"
+    VERSION = "2023_15_12"
 
 
 class VpcStack(core.Stack):
@@ -33,7 +32,7 @@ class VpcStack(core.Stack):
         else:
             self.vpc = _ec2.Vpc(
                 self,
-                "miztiikVpc",
+                "matlabGccaVpc",
                 cidr="10.10.0.0/16",
                 max_azs=2,
                 nat_gateways=1,
@@ -52,12 +51,12 @@ class VpcStack(core.Stack):
                 ]
             )
 
-        output_0 = core.CfnOutput(
-            self,
-            "AutomationFrom",
-            value=f"{GlobalArgs.SOURCE_INFO}",
-            description="To know more about this automation stack, check out our github page."
-        )
+        # output_0 = core.CfnOutput(
+        #     self,
+        #     "AutomationFrom",
+        #     value=f"{GlobalArgs.SOURCE_INFO}",
+        #     description="To know more about this automation stack, check out our github page."
+        # )
 
         output_1 = core.CfnOutput(
             self,

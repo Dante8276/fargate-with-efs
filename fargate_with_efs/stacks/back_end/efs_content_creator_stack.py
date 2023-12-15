@@ -8,18 +8,16 @@ from aws_cdk import core
 
 import os
 
-
 class GlobalArgs:
     """
     Helper to define global statics
     """
 
-    OWNER = "MystiqueAutomation"
-    ENVIRONMENT = "production"
-    REPO_NAME = "fargate-with-efs"
-    SOURCE_INFO = f"https://github.com/miztiik/{REPO_NAME}"
-    VERSION = "2020_09_07"
-    MIZTIIK_SUPPORT_EMAIL = ["mystique@example.com", ]
+    OWNER = "ABB"
+    ENVIRONMENT = "development"
+    # REPO_NAME = "fargate-with-efs"
+    # SOURCE_INFO = f"https://github.com/yash/{REPO_NAME}"
+    VERSION = "2023_15_12"
 
 
 class EfsContentCreatorStack(core.Stack):
@@ -41,7 +39,8 @@ class EfsContentCreatorStack(core.Stack):
         # Create Serverless Event Processor using Lambda):
         # Read Lambda Code):
         try:
-            with open("fargate_with_efs/stacks/back_end/lambda_src/serverless_greeter.py", mode="r") as f:
+            with open("./lambda_src/serverless_greeter.py", mode="r") as f:
+            # with open("fargate_with_efs/stacks/back_end/lambda_src/serverless_greeter.py", mode="r") as f:
                 greeter_fn_code = f.read()
         except OSError as e:
             print("Unable to read Lambda Function Code")
@@ -51,27 +50,27 @@ class EfsContentCreatorStack(core.Stack):
 
         greeter_fn = _lambda.Function(
             self,
-            "secureGreeterFn",
-            function_name=f"greeter_fn_{id}",
+            "secureInvokeFn",
+            function_name=f"gcca_invoke_fn_{id}",
             runtime=_lambda.Runtime.PYTHON_3_7,
             handler="index.lambda_handler",
             code=_lambda.InlineCode(greeter_fn_code),
             current_version_options={
                 "removal_policy": core.RemovalPolicy.DESTROY,  # retain old versions
                 "retry_attempts": 1,
-                "description": "Mystique Factory Build Version"
+                "description": "Matlab GCCA Factory Build Version"
             },
             timeout=core.Duration.seconds(15),
             reserved_concurrent_executions=20,
             retry_attempts=1,
             environment={
                 "LOG_LEVEL": f"{stack_log_level}",
-                "Environment": "Production",
+                "Environment": "Deployment",
                 "ANDON_CORD_PULLED": "False",
                 "RANDOM_SLEEP_ENABLED": "False",
                 "EFS_MNT_PATH": efs_mnt_path
             },
-            description="A simple greeter function, which responds with a timestamp",
+            description="An invoke function, which does a POST request and responds with a timestamp and output",
             vpc=vpc,
             vpc_subnets=_ec2.SubnetType.PRIVATE,
             security_groups=[efs_sg],
@@ -82,9 +81,9 @@ class EfsContentCreatorStack(core.Stack):
         greeter_fn_dev_alias = _lambda.Alias(
             self,
             "greeterFnMystiqueAutomationAlias",
-            alias_name="MystiqueAutomation",
+            alias_name="MatlabGCCAAutomation",
             version=greeter_fn_version,
-            description="Mystique Factory Build Version to ingest content from API GW to EFS",
+            description="Matlab GCCA Factory Build Version to ingest content from API GW to EFS",
             retry_attempts=1
         )
 
@@ -123,7 +122,7 @@ class EfsContentCreatorStack(core.Stack):
             access_log_destination=_apigw.LogGroupLogDestination(wa_api_logs),
             variables={
                 "lambdaAlias": "prod",
-                "appOwner": "Mystique"
+                "appOwner": "ABB"
             }
         )
 
@@ -156,12 +155,12 @@ class EfsContentCreatorStack(core.Stack):
         )
 
         # Outputs
-        output_0 = core.CfnOutput(
-            self,
-            "AutomationFrom",
-            value=f"{GlobalArgs.SOURCE_INFO}",
-            description="To know more about this automation stack, check out our github page."
-        )
+        # output_0 = core.CfnOutput(
+        #     self,
+        #     "AutomationFrom",
+        #     value=f"{GlobalArgs.SOURCE_INFO}",
+        #     description="To know more about this automation stack, check out our github page."
+        # )
 
         output_1 = core.CfnOutput(
             self,

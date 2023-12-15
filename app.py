@@ -14,7 +14,7 @@ app = core.App()
 vpc_stack = VpcStack(
     app,
     "vpc-stack",
-    description="Miztiik Automation: VPC to host resources for generating load on API"
+    description="VPC to host resources for generating load on API"
 )
 
 # Create EFS
@@ -22,7 +22,7 @@ efs_stack = EfsStack(
     app,
     "efs-stack",
     vpc=vpc_stack.vpc,
-    description="Miztiik Automation: Deploy AWS Elastic File System Stack"
+    description="Deploy AWS Elastic File System Stack"
 )
 
 # Use Lambda with API Gateway to create content in EFS
@@ -35,7 +35,7 @@ efs_content_creator_stack = EfsContentCreatorStack(
     efs_ap_nginx=efs_stack.efs_ap_nginx,
     stack_log_level="INFO",
     back_end_api_name="efs-content-creator",
-    description="Miztiik Automation: Use Lambda with API Gateway to create content in EFS"
+    description="Use Lambda with API Gateway to create content in EFS"
 )
 
 # Persistent storage with containerized workload like Fargate
